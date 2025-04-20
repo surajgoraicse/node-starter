@@ -1,7 +1,12 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import ApiError from "../utils/ApiError.util.js";
 
-const handleError = (err: ApiError, req: Request, res: Response): void => {
+const handleError = (
+	err: ApiError,
+	req: Request,
+	res: Response,
+	next: NextFunction
+): void => {
 	const errorResponse = {
 		statusCode: err.statusCode || 500,
 		name: err.name || "server error",
@@ -11,6 +16,7 @@ const handleError = (err: ApiError, req: Request, res: Response): void => {
 		errors: err.errors || [],
 	};
 	console.log("Error : ", errorResponse);
+
 	// console.log("Error stack : ", err.stack);
 
 	// Include stack trace in development mode

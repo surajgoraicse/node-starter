@@ -19,12 +19,11 @@ export const signUpSchema = z.object({
 	fullname: z.string().min(6, "fullname should have aleast 6 characters"),
 });
 
-const user = {
-	username: "surajgorai",
-	email: "surajgorai@gmail.com",
-	password: "sdfjhsdfe#dD234",
-	fullname: "suraj gorai",
-};
+// const user = {
+// 	username: "surajgorai",
+// 	email: "surajgorai@gmail.com",
+// 	password: "sdfjhsdfe#dD234",
+// 	fullname: "suraj gorai",
+// };
 
-const validate = signUpSchema.safeParse(user)
-console.log(validate);
+// const validate = signUpSchema.safeParse(user)

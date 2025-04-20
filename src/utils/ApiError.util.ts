@@ -1,10 +1,10 @@
 class ApiError extends Error {
 	success = false;
-	data: Record<string, any> | null = null;
 
 	constructor(
 		public message: string = "Something went wrong",
 		public statusCode: number,
+		public data: any = [],
 		public errors: Error | string | string[] = []
 	) {
 		super(message);
