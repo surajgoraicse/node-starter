@@ -1,14 +1,19 @@
 import express from "express";
 import "dotenv/config";
 import connectDb from "./models/db.js";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import morgan from "morgan";
 
 const PORT = process.env.PORT || 8003;
 const MONGODB_URI = process.env.MONGODB_URI;
 
-
-connectDb(MONGODB_URI!)
+connectDb(MONGODB_URI!);
 const app = express();
-
+app.use(express.json());
+app.use(cookieParser());
+app.use(cors());
+app.use(morgan("dev"));
 
 app.get("/", (req, res) => {
 	res.send("this is some data");

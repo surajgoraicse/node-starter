@@ -51,6 +51,7 @@ const userSchema = new mongoose.Schema<IUser>(
 		role: {
 			type: String,
 			enum: ["user", "admin"],
+			default : "user"
 		},
 		refreshToken: {
 			type: String,
@@ -61,6 +62,7 @@ const userSchema = new mongoose.Schema<IUser>(
 	{ timestamps: true }
 );
 
+// hashes the password before saving in db
 userSchema.pre("save", async function (this: IUser, next) {
 	try {
 		if (this.isModified("password")) {
@@ -83,12 +85,12 @@ userSchema.methods.comparePassword = async function (
 	}
 };
 
-// compare the password first
-// then update the password
 userSchema.methods.changePassword = async function (
 	newPassword: string,
 	oldPassword: string
 ): Promise<boolean> {
+	// compare the password first
+	// then update the password
 	const compare = await bcrypt.compare(oldPassword, this.password);
 	if (!compare) {
 		return false;

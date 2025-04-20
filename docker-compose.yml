@@ -1,8 +1,6 @@
 name: mern
 
 services:
- 
-
   mongo:
     image: mongo
     container_name: mongodb
