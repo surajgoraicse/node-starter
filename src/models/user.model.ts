@@ -9,6 +9,7 @@ interface IUser extends Document {
 	fullname: string;
 	role: "user" | "admin";
 	refreshToken: string;
+	avatar: string;
 	comparePassword: (password: string) => Promise<boolean>;
 	changePassword: (
 		newPassword: string,
@@ -34,6 +35,11 @@ const userSchema = new mongoose.Schema<IUser>(
 			trim: true,
 		},
 
+		avatar: {
+			type: String,
+			default: "some default image link",
+		},
+
 		email: {
 			type: String,
 			required: [true, "Please provide email"],
@@ -51,7 +57,7 @@ const userSchema = new mongoose.Schema<IUser>(
 		role: {
 			type: String,
 			enum: ["user", "admin"],
-			default : "user"
+			default: "user",
 		},
 		refreshToken: {
 			type: String,
