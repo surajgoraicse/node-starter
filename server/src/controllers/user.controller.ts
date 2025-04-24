@@ -36,11 +36,15 @@ export const registerUser = asyncHandler(
 					)
 				);
 		}
+		const role = "user";
+		const isVerifiedAdmin = false;
 		const user = await UserModel.create({
 			username,
 			password,
 			email,
 			fullName,
+			role,
+			isVerifiedAdmin,
 		});
 		return res
 			.status(201)
@@ -113,12 +117,37 @@ export const logout = asyncHandler(
 			return next(new ApiError("user already logout", 404));
 		}
 		user.refreshToken = "null";
-		await user.save();
+		await user.save({ validateBeforeSave: false });
 
 		return res
 			.status(200)
 			.cookie("refreshToken", "")
 			.cookie("accessToken", "")
 			.json(new ApiResponse(200, true, "Logout successfull"));
+	}
+);
+
+export const changePassword = asyncHandler(
+	async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+		console.log("reach here");
+		if (!req.user) {
+			return next(new ApiError("User not found", 404));
+		}
+		const { oldPassword, newPassword } = req.body;
+		if (oldPassword === newPassword) {
+			return next(
+				new ApiError("Old Password can't be same as new Password", 400)
+			);
+		}
+		const changePassword = await req.user.changePassword(
+			newPassword,
+			oldPassword
+		);
+		if (!changePassword) {
+			return next(new ApiError("Incorrect Previous password", 400));
+		}
+		return res
+			.status(200)
+			.json(new ApiResponse(200, true, "User password change"));
 	}
 );
