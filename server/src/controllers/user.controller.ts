@@ -91,7 +91,6 @@ export const login = asyncHandler(
 
 		await user.save();
 
-		// remove password field from user TODO:
 		return res
 			.status(200)
 			.cookie("accessToken", accessToken, { httpOnly: true, secure: true })
@@ -99,5 +98,23 @@ export const login = asyncHandler(
 			.json(
 				new ApiResponse(200, true, "User login successfully", user.userObj())
 			);
+	}
+);
+
+export const logout = asyncHandler(
+	// check if user exists in auth
+	// remove the cookies
+
+	async (req: Request, res: Response, next: NextFunction) => {
+		const user = req.user
+		if (!user) {
+			return next(new ApiError("user already logout", 404));
+		}
+
+		return res
+			.status(200)
+			.cookie("refreshToken", "")
+			.cookie("accessToken", "")
+			.json(new ApiResponse(200, true, "Logout successfull"));
 	}
 );
