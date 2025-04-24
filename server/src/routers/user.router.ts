@@ -6,6 +6,7 @@ const app = Router();
 
 app.post("/register", registerUser);
 app.post("/login", login)
-app.post("/logout" , authUser , logout)
+app.post("/logout", authUser, logout)
+
 
 export default app;

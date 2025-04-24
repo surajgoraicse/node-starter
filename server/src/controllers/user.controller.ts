@@ -5,6 +5,8 @@ import { loginSchema, signUpSchema } from "../schemas/user.zod.js";
 import ApiResponse from "../utils/ApiResponse.util.js";
 import ApiError from "../utils/ApiError.util.js";
 import bcrypt from "bcryptjs";
+import { AuthenticatedRequest } from "../types/types.js";
+import { cookieOptions } from "../constants.js";
 
 export const registerUser = asyncHandler(
 	async (req: Request, res: Response, next: NextFunction) => {
@@ -89,12 +91,12 @@ export const login = asyncHandler(
 		const refreshToken = user.generateRefreshToken();
 		user.refreshToken = refreshToken;
 
-		await user.save();
+		await user.save({ validateBeforeSave: false });
 
 		return res
 			.status(200)
-			.cookie("accessToken", accessToken, { httpOnly: true, secure: true })
-			.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true })
+			.cookie("accessToken", accessToken, cookieOptions)
+			.cookie("refreshToken", refreshToken, cookieOptions)
 			.json(
 				new ApiResponse(200, true, "User login successfully", user.userObj())
 			);
@@ -105,11 +107,13 @@ export const logout = asyncHandler(
 	// check if user exists in auth
 	// remove the cookies
 
-	async (req: Request, res: Response, next: NextFunction) => {
-		const user = req.user
+	async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+		const user = req.user;
 		if (!user) {
 			return next(new ApiError("user already logout", 404));
 		}
+		user.refreshToken = "null";
+		await user.save();
 
 		return res
 			.status(200)
