@@ -20,6 +20,8 @@ app.use(morgan("dev"));
 import userRouter from "./routers/user.router.js";
 import adminRouter from "./routers/admin.router.js";
 
+
+
 // using routers
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/admin", adminRouter);

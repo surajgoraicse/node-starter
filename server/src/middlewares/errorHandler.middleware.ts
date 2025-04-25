@@ -21,7 +21,7 @@ const handleError = (
 
 	// Include stack trace in development mode
 	// if (process.env.NODE_ENV === "development") {
-	//     response.stack = err.stack;
+	//     errorResponse.stack = err.stack;
 	// }
 
 	res.status(errorResponse.statusCode).json(errorResponse);

@@ -2,15 +2,16 @@ import mongoose, { Document } from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
+
 export interface IUser extends Document {
 	username: string;
 	password: string;
 	email: string;
 	fullName: string;
 	role: "user" | "admin";
+	isVerifiedAdmin : boolean,
 	refreshToken: string;
 	avatar: string;
-	comparePassword: (password: string) => Promise<boolean>;
 	changePassword: (
 		newPassword: string,
 		oldPassword: string
@@ -60,6 +61,10 @@ const userSchema = new mongoose.Schema<IUser>(
 			enum: ["user", "admin"],
 			default: "user",
 		},
+		isVerifiedAdmin: {
+			type: Boolean,
+			default : false,
+		},
 		refreshToken: {
 			type: String,
 			default: "null",
@@ -80,17 +85,6 @@ userSchema.pre("save", async function (this: IUser, next) {
 		next(error as Error);
 	}
 });
-
-// instance method to compare, change password
-userSchema.methods.comparePassword = async function (
-	password: string
-): Promise<boolean> {
-	try {
-		return await bcrypt.compare(password, this.password);
-	} catch (error) {
-		throw new Error("Password comparison failed");
-	}
-};
 
 userSchema.methods.changePassword = async function (
 	newPassword: string,
