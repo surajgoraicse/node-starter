@@ -26,9 +26,9 @@ const authUser = asyncHandler(
 		if (!user) {
 			return next(new ApiError("User not found", 404));
 		}
-        console.log("user found");
-        req.user = user;
-        next()
+		console.log("user found");
+		req.user = user;
+		next();
 	}
 );
 
